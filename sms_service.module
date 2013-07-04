@@ -36,6 +36,7 @@ function sms_service_user_view($account) {
 
   // Add sms checkbox.
   $account->content['alma_user_sms'] = array(
+   '#prefix' => '<div class="smsservice">',
     '#title' => t('SMS reminders'),
     '#type' => 'item',
     '#markup' => '<input type="checkbox" ' . $sms . ' class="form-checkbox" disabled=TRUE >'.t(' Pris 3kr. pr. stk (Regning overføres automatisk til Lånerstatus).'),
@@ -48,6 +49,7 @@ function sms_service_user_view($account) {
     '#type' => 'item',
     '#markup' => '<input type="checkbox" ' . $email . ' class="form-checkbox" disabled=TRUE >'.t(' Pris 3kr. pr. stk (Regning overføres automatisk til Lånerstatus).'),
     '#weight' => 11,
+    '#suffix' => '</div>',
   );
 }
 
