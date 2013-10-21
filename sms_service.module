@@ -2,11 +2,12 @@
 
 /**
  * @file
+ *
  * Implements sms and email checkboxes in user profile and in
- * user edit form to save changes.
+ *  user edit form to save changes.
  */
 
- module_load_include('inc', 'sms_service', 'sms_service');
+module_load_include('inc', 'sms_service', 'sms_service');
 
 /**
  * Implements hook_user_view().
@@ -18,7 +19,7 @@ function sms_service_user_view($account) {
     return;
   }
 
-  // SMS default checked ?
+  // SMS default checked?
   if (isset($info->messages[0]) && $info->messages[0]['value'] == 'sms' || isset($info->messages[1]) && $info->messages[1]['value'] == 'sms') {
     $sms = 'checked="checked"';
   }
@@ -26,7 +27,7 @@ function sms_service_user_view($account) {
     $sms = '';
   }
 
-  // Email default checked ?
+  // Email default checked?
   if (isset($info->messages[0]) && $info->messages[0]['value'] == 'email' || isset($info->messages[1]) && $info->messages[1]['value'] == 'email') {
     $email = 'checked="checked"';
   }
@@ -34,22 +35,22 @@ function sms_service_user_view($account) {
     $email = '';
   }
 
-  // Add sms checkbox.
+  // Add SMS checkbox.
   $account->content['alma_user_sms'] = array(
-   '#prefix' => '<div class="sms_service">',
-    '#title' => t('SMS reminders'),
-    '#type' => 'item',
-    '#markup' => '<input type="checkbox" ' . $sms . ' class="form-checkbox" disabled=TRUE >'.t(' Pris 3kr. pr. stk (Regning overføres automatisk til Lånerstatus).'),
+   '#prefix'  => '<div class="sms_service">',
+    '#title'  => t('SMS reminders'),
+    '#type'   => 'item',
+    '#markup' => '<input type="checkbox" ' . $sms . ' class="form-checkbox" disabled=TRUE >' . t(' Price: 3 DKK per piece') . '.',
     '#weight' => 10,
     '#suffix' => '</div>',
   );
 
   // Add email checkbox.
   $account->content['alma_user_email'] = array(
-   '#prefix' => '<div class="email_service">',
-    '#title' => t('Email reminders.'),
-    '#type' => 'item',
-    '#markup' => '<input type="checkbox" ' . $email . ' class="form-checkbox" disabled=TRUE >'.t(' Pris 3kr. pr. stk (Regning overføres automatisk til Lånerstatus).'),
+   '#prefix'  => '<div class="email_service">',
+    '#title'  => t('Email reminders'),
+    '#type'   => 'item',
+    '#markup' => '<input type="checkbox" ' . $email . ' class="form-checkbox" disabled=TRUE >' . t(' Price: 3 DKK per piece') . '.',
     '#weight' => 11,
     '#suffix' => '</div>',
   );
@@ -65,7 +66,7 @@ function sms_service_form_user_profile_form_alter(&$form, &$form_state) {
     return;
   }
 
-  // SMS default checked ?
+  // SMS default checked?
   if (isset($info->messages[0]) && $info->messages[0]['value'] == 'sms' || isset($info->messages[1]) && $info->messages[1]['value'] == 'sms') {
     $sms = '1';
   }
@@ -73,7 +74,7 @@ function sms_service_form_user_profile_form_alter(&$form, &$form_state) {
     $sms = '0';
   }
 
-  // Email default checked ?
+  // Email default checked?
   if (isset($info->messages[0]) && $info->messages[0]['value'] == 'email' || isset($info->messages[1]) && $info->messages[1]['value'] == 'email') {
     $email = '1';
   }
@@ -81,58 +82,54 @@ function sms_service_form_user_profile_form_alter(&$form, &$form_state) {
     $email = '0';
   }
 
-  // Add sms checkbox.
+  // Add SMS checkbox.
   $form['alma_user_sms'] = array(
-    '#prefix' => '<div class="smsservice"><div class="sms_service">' . t('Ved at sætte et hak nedenunder acceptere du samtidig vores <a href="/paamindelsesservice" target="_blank">betingelser</a>' ). '</p>',
-    '#title' => t('SMS reminders.'),
-    '#type' => 'checkbox',
-    '#return_value' => '1',
+    '#prefix'        => '<div class="smsservice"><div class="sms_service">' . t('By checking this, you accept our <a href="/paamindelsesservice" target="_blank">terms</a>') . '.</p>',
+    '#title'         => t('SMS reminders'),
+    '#type'          => 'checkbox',
+    '#return_value'  => '1',
     '#default_value' => $sms,
-    '#weight' => -2,
-    '#suffix' => '</div>',
+    '#weight'        => -2,
+    '#suffix'        => '</div>',
   );
 
   // Add email checkbox.
   $form['alma_user_email'] = array(
-   '#prefix' => '<div class="email_service">',
-    '#title' => t('Email reminders.'),
-    '#type' => 'checkbox',
-    '#return_value' => '1',
+   '#prefix'         => '<div class="email_service">',
+    '#title'         => t('Email reminders'),
+    '#type'          => 'checkbox',
+    '#return_value'  => '1',
     '#default_value' => $email,
-    '#suffix' => '</div></div>',
-    '#weight' => -1,
+    '#suffix'        => '</div></div>',
+    '#weight'        => -1,
   );
-  // Additional handler to submit changes to alma.
+  // Additional handler to submit changes to ALMA.
   $form['#submit'][] = 'sms_service_user_profile_submit';
 }
 
 /**
  * Additional handler for user_profile submit to
- * save checkbox settings via alma.
+ *  save checkbox settings via ALMA.
  */
 function sms_service_user_profile_submit($form, &$form_state) {
   $creds = ding_user_get_creds();
 
   if ($form_state['values']['alma_user_sms']['return_value'] == '1') {
-
     // Add a due date alerts as SMS service per default.
     alma_client_invoke('add_message_service', $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_SMS, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
   }
   // Also remove SMS messaging service.
   else {
-
     alma_client_invoke('remove_message_service', $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_SMS, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
   }
-
   // Also add email messaging service.
   if ($form_state['values']['alma_user_email']['return_value'] == '1') {
-
     // Add a due date alerts as email service per default.
     alma_client_invoke('add_message_service', $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_EMAIL, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
   }
   // Also remove email messaging service.
   else {
-
     alma_client_invoke('remove_message_service', $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_EMAIL, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
   }
 }
+
