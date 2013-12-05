@@ -1,0 +1,204 @@
+<?php
+/**
+ * @file
+ * Alma Reminder Service module.
+ *
+ * Provide desired sms and/or email notifications.
+ */
+
+/**
+ * Implements hook_user_view().
+ */
+function alma_reminder_service_user_view($account) {
+  $info = alma_reminder_service_get_patron();
+
+  if (is_null($info) || count($info->messages) == 0) {
+    return;
+  }
+
+  $sms = FALSE;
+  // SMS default checked?
+  if (isset($info->messages[0]) && $info->messages[0]['value'] == 'sms' || isset($info->messages[1]) && $info->messages[1]['value'] == 'sms') {
+    $sms = TRUE;
+  }
+
+  $email = FALSE;
+  // Email default checked?
+  if (isset($info->messages[0]) && $info->messages[0]['value'] == 'email' || isset($info->messages[1]) && $info->messages[1]['value'] == 'email') {
+    $email = TRUE;
+  }
+
+  // Add SMS checkbox.
+  $account->content['alma_user_sms'] = array(
+    '#prefix' => '<div class="alma-reminder-service">',
+    '#title' => t('SMS reminders'),
+    '#type' => 'item',
+    '#markup' => ($sms) ? t('You are subscribed') : t('You are not subscribed'),
+    '#weight' => 10,
+    '#suffix' => '</div>',
+  );
+  // Add email checkbox.
+  $account->content['alma_user_email'] = array(
+    '#prefix' => '<div class="email_service">',
+    '#title' => t('Email reminders'),
+    '#type' => 'item',
+    '#markup' => ($email) ? t('You are subscribed') : t('You are not subscribed'),
+    '#weight' => 11,
+    '#suffix' => '</div>',
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state) {
+  $info = alma_reminder_service_get_patron();
+
+  if (is_null($info) || count($info->messages) == 0) {
+    return;
+  }
+
+  $sms = FALSE;
+  // SMS default checked?
+  if (isset($info->messages[0]) && $info->messages[0]['value'] == 'sms' || isset($info->messages[1]) && $info->messages[1]['value'] == 'sms') {
+    $sms = TRUE;
+  }
+
+  $email = FALSE;
+  // Email default checked?
+  if (isset($info->messages[0]) && $info->messages[0]['value'] == 'email' || isset($info->messages[1]) && $info->messages[1]['value'] == 'email') {
+    $email = TRUE;
+  }
+
+  // Add SMS checkbox.
+  $form['alma_user_sms'] = array(
+    '#prefix' => '<div class="alma-reminder-service"><div class="sms-service">' . t('By checking this, you accept our <a href="/paamindelsesservice" target="_blank">terms</a>') . '.</p>',
+    '#title' => t('SMS reminders'),
+    '#type' => 'checkbox',
+    '#return_value' => '1',
+    '#default_value' => $sms,
+    '#weight' => -2,
+    '#suffix' => '<div class="reminder-note">' . t('Price: 3 DKK per piece') . '</div></div>',
+  );
+
+  // Add email checkbox.
+  $form['alma_user_email'] = array(
+    '#prefix' => '<div class="email-service">',
+    '#title' => t('Email reminders'),
+    '#type' => 'checkbox',
+    '#return_value' => '1',
+    '#default_value' => $email,
+    '#suffix' => '<div class="reminder-note">' . t('Price: 3 DKK per piece') . '</div></div></div>',
+    '#weight' => -1,
+  );
+
+  $form['#attached']['css'][] = drupal_get_path('module', 'alma_reminder_service') . '/css/alma_reminder_service.styles.css';
+
+  // Additional handler to submit changes to ALMA.
+  $form['#submit'][] = 'alma_reminder_service_user_profile_submit';
+}
+
+/**
+ * Additional handler for user_profile submit to
+ *  save checkbox settings via ALMA.
+ */
+function alma_reminder_service_user_profile_submit($form, &$form_state) {
+  $creds = ding_user_get_creds();
+
+  $action = 'remove_message_service';
+  if ($form_state['values']['alma_user_sms']['return_value'] == '1') {
+    $action = 'add_message_service';
+  }
+  alma_client_invoke($action, $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_SMS, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
+
+  $action = 'remove_message_service';
+  if ($form_state['values']['alma_user_email']['return_value'] == '1') {
+    $action = 'add_message_service';
+  }
+  alma_client_invoke($action, $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_EMAIL, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
+}
+
+
+/**
+ * New client.
+ */
+function alma_reminder_service_client() {
+  /*
+   * This is basically a singleton. We also wait until right before
+   *  instantiating to include our required classes. That seems like a
+   *  decent performance tradeoff instead of loading everything on every
+   *  page load.
+   */
+  static $client;
+  if (!isset($client)) {
+    try {
+      $client = new Smsservice(variable_get('alma_base_url', ''));
+    }
+    catch (Exception $e) {
+      watchdog('alma', 'Constructor error: “@message”', array(
+        '@message' => $e->getMessage(),
+        WATCHDOG_ERROR
+      ));
+
+      return NULL;
+    }
+  }
+
+  return $client;
+}
+
+/**
+ * New client to invoke custom changes.
+ */
+function alma_reminder_service_client_invoke($method) {
+  $args = func_get_args();
+  // Lose the method.
+  array_shift($args);
+  $client = alma_reminder_service_client();
+
+  try {
+    $result = call_user_func_array(array($client, $method), $args);
+  }
+  catch (Exception $e) {
+    watchdog('alma', '@method error: “@message”', array(
+      '@method' => $method,
+      '@message' => $e->getMessage()
+    ), WATCHDOG_ERROR);
+
+    throw $e;
+  }
+
+  return $result;
+}
+
+/**
+ * Messages/sendMethods for patro.n
+ */
+function alma_reminder_service_get_patron($creds = NULL, $reset = FALSE, $as_array = FALSE) {
+  if (is_null($creds)) {
+    // Get creds, which may throw an exception that login is required.
+    global $user;
+
+    try {
+      $creds = ding_user_get_creds($user);
+    }
+    catch (DingProviderAuthException $e) {
+      return NULL;
+    }
+  }
+
+  static $patron;
+  if (!$patron || $reset) {
+    $info = alma_reminder_service_client_invoke('GetPatronInfo', $creds['name'], $creds['pass'], TRUE);
+    $patron = array(
+      // The missing part.
+      'messages' => isset($info['sendMethods']) ? $info['sendMethods'] : '',
+    );
+  }
+
+  if ($as_array) {
+    return $patron;
+  }
+
+  return (object)$patron;
+}

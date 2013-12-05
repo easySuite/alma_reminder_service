@@ -1,0 +1,9 @@
+.alma-reminder-service .form-item-alma-user-sms,
+.alma-reminder-service .form-item-alma-user-email,
+.alma-reminder-service .reminder-note {
+  display: inline-block;
+}
+
+.alma-reminder-service .reminder-note {
+  text-indent: 10px;
+}
