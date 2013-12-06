@@ -1,6 +1,6 @@
-name = sms_service
+name = Alma Reminder Service
 core = 7.x
 package = "Ding!"
-php = "5.2.4"
 version = "7.x-1.1"
 dependencies[] = alma
+files[] = alma_reminder_service.inc
