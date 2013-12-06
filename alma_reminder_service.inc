@@ -8,14 +8,22 @@
  */
 define('ALMA_SERVICE_METHOD_EMAIL', 'email');
 /**
- * Instead of copying alma to sites/all and maintain it,
- *  we defind our own methods to implement missing alma integration.
+ * SMS Service wrapper.
+ *
+ * A small wrapper fro missing ALMA functionality.
  */
 class Smsservice extends AlmaClient {
   /**
-   * Implements to check messages service in patron
-   *  (not implemented in original alma module
-   *  only implemented add and remove messages).
+   * Implements to check messages service in patron (not implemented in original alma module only implemented add and remove messages).
+   * @param string $borr_card
+   *   User CPR.
+   * @param string $pin_code
+   *   User password.
+   * @param bool $extended
+   *   Whether to fetch extended user data.
+   *
+   * @return array
+   *   An array with enabled reminder options.
    */
   function GetPatronInfo($borr_card, $pin_code, $extended = FALSE) {
     $path = ($extended) ? 'patron/informationExtended' : 'patron/information';
