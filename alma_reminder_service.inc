@@ -15,6 +15,7 @@ define('ALMA_SERVICE_METHOD_EMAIL', 'email');
 class Smsservice extends AlmaClient {
   /**
    * Implements to check messages service in patron (not implemented in original alma module only implemented add and remove messages).
+   *
    * @param string $borr_card
    *   User CPR.
    * @param string $pin_code
