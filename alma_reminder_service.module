@@ -12,11 +12,6 @@
 function alma_reminder_service_user_view($account) {
   $info = alma_reminder_service_get_patron();
 
-  if (is_null($info) || count($info->messages) == 0) {
-    watchdog('alma_reminder_service', 'Alma reminder service not enabled on this instance.', array(), WATCHDOG_DEBUG);
-    return;
-  }
-
   $sms = FALSE;
   // SMS default checked?
   if (isset($info->messages[0]) && $info->messages[0]['value'] == 'sms' || isset($info->messages[1]) && $info->messages[1]['value'] == 'sms') {
@@ -54,11 +49,6 @@ function alma_reminder_service_user_view($account) {
  */
 function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state) {
   $info = alma_reminder_service_get_patron();
-
-  if (is_null($info) || count($info->messages) == 0) {
-    watchdog('alma_reminder_service', 'Alma reminder service not enabled on this instance.', array(), WATCHDOG_DEBUG);
-    return;
-  }
 
   $sms = FALSE;
   // SMS default checked?
