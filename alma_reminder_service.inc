@@ -36,7 +36,9 @@ class Smsservice extends AlmaClient {
     ));
 
     $info = $doc->getElementsByTagName($info_node)->item(0);
+    $message_services = $info->getElementsByTagName('messageServices');
     $data = array(
+      'messageServices' => !empty($message_services),
       'sendMethods' => array(),
     );
 
