@@ -108,13 +108,13 @@ function alma_reminder_service_user_profile_submit($form, &$form_state) {
   $creds = ding_user_get_creds();
 
   $action = 'remove_message_service';
-  if ($form_state['values']['alma_user_sms']['return_value'] == '1') {
+  if (!empty($form_state['values']['alma_user_sms'])) {
     $action = 'add_message_service';
   }
   alma_client_invoke($action, $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_SMS, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
 
   $action = 'remove_message_service';
-  if ($form_state['values']['alma_user_email']['return_value'] == '1') {
+  if (!empty($form_state['values']['alma_user_email'])) {
     $action = 'add_message_service';
   }
   alma_client_invoke($action, $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_EMAIL, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
