@@ -6,6 +6,8 @@
  * Provide desired sms and/or email notifications.
  */
 
+define('ALMA_REMINDER_SERVICE_COST', 3);
+
 /**
  * Implements hook_user_view().
  */
@@ -80,7 +82,7 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
     '#return_value' => '1',
     '#default_value' => $sms,
     '#weight' => -2,
-    '#suffix' => '<div class="reminder-note">' . t('Price: 3 DKK per piece') . '</div></div>',
+    '#suffix' => '<div class="reminder-note">' . t('Price: @price DKK per piece', array('@price' => ALMA_REMINDER_SERVICE_COST)) . '</div></div>',
   );
 
   // Add email checkbox.
@@ -90,7 +92,7 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
     '#type' => 'checkbox',
     '#return_value' => '1',
     '#default_value' => $email,
-    '#suffix' => '<div class="reminder-note">' . t('Price: 3 DKK per piece') . '</div></div></div>',
+    '#suffix' => '<div class="reminder-note">' . t('Price: @price DKK per piece', array('@price' => ALMA_REMINDER_SERVICE_COST)) . '</div></div></div>',
     '#weight' => -1,
   );
 
@@ -120,6 +122,27 @@ function alma_reminder_service_user_profile_submit($form, &$form_state) {
   alma_client_invoke($action, $creds['name'], $creds['pass'], ALMA_SERVICE_METHOD_EMAIL, ALMA_SERVICE_TYPE_DUE_DATE_ALERT);
 }
 
+/**
+ * Implement hook_form_alter().
+ */
+function alma_reminder_service_form_alter(&$form, $form_state, $form_id) {
+  if ($form_id == 'alma_settings_form') {
+    $form['alma_reminder_service'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Alma reminder service'),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+    );
+
+    $form['alma_reminder_service']['alma_reminder_service_cost'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Reminder cost'),
+      '#description' => t('Reminder cost, in DKK.'),
+      '#default_value' => variable_get('alma_reminder_service_cost', ALMA_REMINDER_SERVICE_COST),
+      '#size' => 2,
+    );
+  }
+}
 
 /**
  * New client.
