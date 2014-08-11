@@ -6,7 +6,8 @@
  * Provide desired sms and/or email notifications.
  */
 
-define('ALMA_REMINDER_SERVICE_COST', 3);
+define('ALMA_REMINDER_SMS_SERVICE_COST', 3);
+define('ALMA_REMINDER_EMAIL_SERVICE_COST', 3);
 
 /**
  * Implements hook_user_view().
@@ -74,7 +75,8 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
     $email = TRUE;
   }
 
-  $service_cost = variable_get('alma_reminder_service_cost', ALMA_REMINDER_SERVICE_COST);
+  $sms_service_cost = variable_get('alma_reminder_sms_service_cost', ALMA_REMINDER_SMS_SERVICE_COST);
+  $email_service_cost = variable_get('alma_reminder_email_service_cost', ALMA_REMINDER_EMAIL_SERVICE_COST);
   // Add SMS checkbox.
   $form['alma_user_sms'] = array(
     '#prefix' => '<div class="alma-reminder-service"><div class="sms-service">' . t('By checking this, you accept our <a href="/paamindelsesservice" target="_blank">terms</a>') . '.</p>',
@@ -83,7 +85,7 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
     '#return_value' => '1',
     '#default_value' => $sms,
     '#weight' => -2,
-    '#suffix' => '<div class="reminder-note">' . t('Price: @price DKK per piece', array('@price' => $service_cost)) . '</div></div>',
+    '#suffix' => '<div class="reminder-note">' . t('Price: @price DKK per piece', array('@price' => $sms_service_cost)) . '</div></div>',
   );
 
   // Add email checkbox.
@@ -93,7 +95,7 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
     '#type' => 'checkbox',
     '#return_value' => '1',
     '#default_value' => $email,
-    '#suffix' => '<div class="reminder-note">' . t('Price: @price DKK per piece', array('@price' => $service_cost)) . '</div></div></div>',
+    '#suffix' => '<div class="reminder-note">' . t('Price: @price DKK per piece', array('@price' => $email_service_cost)) . '</div></div></div>',
     '#weight' => -1,
   );
 
@@ -135,11 +137,20 @@ function alma_reminder_service_form_alter(&$form, $form_state, $form_id) {
       '#collapsed' => FALSE,
     );
 
-    $form['alma_reminder_service']['alma_reminder_service_cost'] = array(
+    $form['alma_reminder_service']['alma_reminder_sms_service_cost'] = array(
       '#type' => 'textfield',
-      '#title' => t('Reminder cost'),
-      '#description' => t('Reminder cost, in DKK.'),
-      '#default_value' => variable_get('alma_reminder_service_cost', ALMA_REMINDER_SERVICE_COST),
+      '#title' => t('SMS reminder cost'),
+      '#description' => t('SMS reminder cost, in DKK.'),
+      '#default_value' => variable_get('alma_reminder_sms_service_cost', ALMA_REMINDER_SMS_SERVICE_COST),
+      '#size' => 2,
+      '#element_validate' => array('element_validate_integer_positive'),
+    );
+
+    $form['alma_reminder_service']['alma_reminder_email_service_cost'] = array(
+      '#type' => 'textfield',
+      '#title' => t('E-Mail reminder cost'),
+      '#description' => t('E-Mail reminder cost, in DKK.'),
+      '#default_value' => variable_get('alma_reminder_email_service_cost', ALMA_REMINDER_EMAIL_SERVICE_COST),
       '#size' => 2,
       '#element_validate' => array('element_validate_integer_positive'),
     );
