@@ -15,7 +15,7 @@ define('ALMA_REMINDER_EMAIL_SERVICE_COST', 3);
 function alma_reminder_service_user_view($account) {
   $info = alma_reminder_service_get_patron();
 
-  if (!$info->service_enabled) {
+  if (!empty($info->service_enabled)) {
     watchdog('alma_reminder_service', 'Alma reminder service not enabled on this instance.', array(), WATCHDOG_DEBUG);
     return;
   }
@@ -58,7 +58,7 @@ function alma_reminder_service_user_view($account) {
 function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state) {
   $info = alma_reminder_service_get_patron();
 
-  if (!$info->service_enabled) {
+  if (!empty($info->service_enabled)) {
     watchdog('alma_reminder_service', 'Alma reminder service not enabled on this instance.', array(), WATCHDOG_DEBUG);
     return;
   }
