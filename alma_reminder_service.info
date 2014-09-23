@@ -1,6 +1,6 @@
 name = Alma Reminder Service
 core = 7.x
-package = "Ding!"
-version = "7.x-1.20"
+package = "easyDDB"
+version = "7.x-1.0"
 dependencies[] = alma
 files[] = alma_reminder_service.inc
