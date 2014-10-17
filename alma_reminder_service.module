@@ -53,6 +53,18 @@ function alma_reminder_service_user_view($account) {
 }
 
 /**
+ * Implements hook_ding_user_menu_alter().
+ *
+ * @see ding_ting_frontend module.
+ */
+function alma_reminder_service_ding_user_menu_alter(&$menu) {
+  $info = alma_reminder_service_get_patron();
+  if (empty($info) || !empty($info->service_enabled)) {
+    $menu = array_filter($menu, function($v) { return (isset($v['#title']) && $v['#title'] == 'Services') ? FALSE : TRUE; } );
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
 function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state) {
