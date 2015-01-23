@@ -9,6 +9,14 @@
   display: inline-block;
 }
 
-.alma-reminder-service .reminder-note {
+.alma-reminder-service .reminder-note,
+.alma-reminder-service .form-type-item,
+.alma-email-service .form-type-item {
   text-indent: 10px;
+}
+
+.alma-reminder-service .form-type-item,
+.alma-email-service .form-type-item {
+  margin: 0;
+  padding: 10px;
 }
