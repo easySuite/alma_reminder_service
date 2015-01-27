@@ -63,7 +63,7 @@ function alma_reminder_service_ding_user_menu_alter(&$menu) {
   $info = alma_reminder_service_get_patron();
   if (empty($info) || !empty($info->service_enabled)) {
     $menu = array_filter($menu, function($v) {
-      return (isset($v['#title']) && $v['#title'] == 'Services') ? FALSE : TRUE;
+      return (isset($v['#title']) && $v['#title'] == t('Services')) ? FALSE : TRUE;
     });
   }
 }
