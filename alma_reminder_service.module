@@ -10,46 +10,48 @@ define('ALMA_REMINDER_SMS_SERVICE_COST', 3);
 define('ALMA_REMINDER_EMAIL_SERVICE_COST', 3);
 
 /**
- * Implements hook_user_view().
+ * Implements hook_entity_view().
  */
-function alma_reminder_service_user_view($account) {
-  $info = alma_reminder_service_get_patron();
+function alma_reminder_service_entity_view($entity, $type, $view_mode, $langcode) {
+  if ($type == 'profile2') {
+    $info = alma_reminder_service_get_patron();
 
-  if (!empty($info->service_enabled)) {
-    watchdog('alma_reminder_service', 'Alma reminder service not enabled on this instance.', array(), WATCHDOG_DEBUG);
-    return;
+    if (empty($info->service_enabled)) {
+      watchdog('alma_reminder_service', 'Alma reminder service not enabled on this instance.', array(), WATCHDOG_DEBUG);
+      return;
+    }
+
+    $sms = FALSE;
+    // SMS default checked?
+    if (isset($info->messages[0]) && $info->messages[0]['value'] == 'sms' || isset($info->messages[1]) && $info->messages[1]['value'] == 'sms') {
+      $sms = TRUE;
+    }
+
+    $email = FALSE;
+    // Email default checked?
+    if (isset($info->messages[0]) && $info->messages[0]['value'] == 'email' || isset($info->messages[1]) && $info->messages[1]['value'] == 'email') {
+      $email = TRUE;
+    }
+
+    // Add SMS checkbox.
+    $entity->content['alma_user_sms'] = array(
+      '#prefix' => '<div class="field alma-reminder-service field-label-inline clearfix"><div class="field-label">' . t('SMS reminders') . '</div>',
+      '#type' => 'item',
+      '#markup' => ($sms) ? t('You are subscribed') : t('You are not subscribed'),
+      '#weight' => 98,
+      '#suffix' => '</div>',
+    );
+    // Add email checkbox.
+    $entity->content['alma_user_email'] = array(
+      '#prefix' => '<div class="field alma-email-service field-label-inline clearfix"><div class="field-label">' . t('Email reminders') . '</div>',
+      '#type' => 'item',
+      '#markup' => ($email) ? t('You are subscribed') : t('You are not subscribed'),
+      '#weight' => 99,
+      '#suffix' => '</div>',
+    );
+
+    drupal_add_css(drupal_get_path('module', 'alma_reminder_service') . '/css/alma_reminder_service.styles.css');
   }
-
-  $sms = FALSE;
-  // SMS default checked?
-  if (isset($info->messages[0]) && $info->messages[0]['value'] == 'sms' || isset($info->messages[1]) && $info->messages[1]['value'] == 'sms') {
-    $sms = TRUE;
-  }
-
-  $email = FALSE;
-  // Email default checked?
-  if (isset($info->messages[0]) && $info->messages[0]['value'] == 'email' || isset($info->messages[1]) && $info->messages[1]['value'] == 'email') {
-    $email = TRUE;
-  }
-
-  // Add SMS checkbox.
-  $account->content['alma_user_sms'] = array(
-    '#prefix' => '<div class="alma-reminder-service">',
-    '#title' => t('SMS reminders'),
-    '#type' => 'item',
-    '#markup' => ($sms) ? t('You are subscribed') : t('You are not subscribed'),
-    '#weight' => 10,
-    '#suffix' => '</div>',
-  );
-  // Add email checkbox.
-  $account->content['alma_user_email'] = array(
-    '#prefix' => '<div class="email_service">',
-    '#title' => t('Email reminders'),
-    '#type' => 'item',
-    '#markup' => ($email) ? t('You are subscribed') : t('You are not subscribed'),
-    '#weight' => 11,
-    '#suffix' => '</div>',
-  );
 }
 
 /**
@@ -60,17 +62,19 @@ function alma_reminder_service_user_view($account) {
 function alma_reminder_service_ding_user_menu_alter(&$menu) {
   $info = alma_reminder_service_get_patron();
   if (empty($info) || !empty($info->service_enabled)) {
-    $menu = array_filter($menu, function($v) { return (isset($v['#title']) && $v['#title'] == 'Services') ? FALSE : TRUE; } );
+    $menu = array_filter($menu, function($v) {
+      return (isset($v['#title']) && $v['#title'] == 'Services') ? FALSE : TRUE;
+    });
   }
 }
 
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state) {
+function alma_reminder_service_form_profile2_edit_provider_alma_form_alter(&$form, &$form_state) {
   $info = alma_reminder_service_get_patron();
 
-  if (!empty($info->service_enabled)) {
+  if (empty($info->service_enabled)) {
     watchdog('alma_reminder_service', 'Alma reminder service not enabled on this instance.', array(), WATCHDOG_DEBUG);
     return;
   }
@@ -87,6 +91,7 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
     $email = TRUE;
   }
 
+
   $sms_service_cost = variable_get('alma_reminder_sms_service_cost', ALMA_REMINDER_SMS_SERVICE_COST);
   $email_service_cost = variable_get('alma_reminder_email_service_cost', ALMA_REMINDER_EMAIL_SERVICE_COST);
   // Add SMS checkbox.
@@ -96,7 +101,7 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
     '#type' => 'checkbox',
     '#return_value' => '1',
     '#default_value' => $sms,
-    '#weight' => -2,
+    '#weight' => 98,
     '#suffix' => '<div class="reminder-note">' . t('Price: @price DKK per piece', array('@price' => $sms_service_cost)) . '</div></div>',
   );
 
@@ -108,7 +113,7 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
     '#return_value' => '1',
     '#default_value' => $email,
     '#suffix' => '<div class="reminder-note">' . t('Price: @price DKK per piece', array('@price' => $email_service_cost)) . '</div></div></div>',
-    '#weight' => -1,
+    '#weight' => 99,
   );
 
   $form['#attached']['css'][] = drupal_get_path('module', 'alma_reminder_service') . '/css/alma_reminder_service.styles.css';
@@ -119,7 +124,7 @@ function alma_reminder_service_form_user_profile_form_alter(&$form, &$form_state
 
 /**
  * Additional handler for user_profile submit to
- *  save checkbox settings via ALMA.
+ * save checkbox settings via ALMA.
  */
 function alma_reminder_service_user_profile_submit($form, &$form_state) {
   $creds = ding_user_get_creds();
@@ -138,7 +143,7 @@ function alma_reminder_service_user_profile_submit($form, &$form_state) {
 }
 
 /**
- * Implement hook_form_alter().
+ * Implements hook_form_alter().
  */
 function alma_reminder_service_form_alter(&$form, $form_state, $form_id) {
   if ($form_id == 'alma_settings_form') {
