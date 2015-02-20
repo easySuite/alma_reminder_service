@@ -1,0 +1,85 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  alma_reminder_service.module: n/a
+#  alma_reminder_service.info: n/a
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2015-02-19 16:14+0100\n"
+"PO-Revision-Date: 2015-02-20 15:17+0100\n"
+"Last-Translator: Martin Cording <mc@inlead.dk>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Language: da\n"
+"X-Generator: Poedit 1.7.4\n"
+
+#: alma_reminder_service.module:38;100
+msgid "SMS reminders"
+msgstr "SMS påmindelser"
+
+#: alma_reminder_service.module:40;48
+msgid "You are subscribed"
+msgstr "Du er tilmeldt"
+
+#: alma_reminder_service.module:40;48
+msgid "You are not subscribed"
+msgstr "Du er ikke tilmeldt"
+
+#: alma_reminder_service.module:46;111
+msgid "Email reminders"
+msgstr "E-mail påmindelser"
+
+#: alma_reminder_service.module:66
+msgid "Services"
+msgstr "Påmindelser"
+
+#: alma_reminder_service.module:99
+msgid "By checking this, you accept our <a href=\"/paamindelsesservice\" target=\"_blank\">terms</a>"
+msgstr "Du accepterer hermed vores <a href=\"/paamindelsesservice\" target=\"_blank\">betingelser</a>"
+
+#: alma_reminder_service.module:105;115
+msgid "Price: @price DKK per piece"
+msgstr "Pris: @price DKK pr. stk."
+
+#: alma_reminder_service.module:152
+msgid "Alma reminder service"
+msgstr "Påmindelsesservice"
+
+#: alma_reminder_service.module:159
+msgid "SMS reminder cost"
+msgstr "Pris pr. SMS"
+
+#: alma_reminder_service.module:160
+msgid "SMS reminder cost, in DKK."
+msgstr "Pris pr. SMS, i DKK."
+
+#: alma_reminder_service.module:168
+msgid "E-Mail reminder cost"
+msgstr "Pris pr. e-mail."
+
+#: alma_reminder_service.module:169
+msgid "E-Mail reminder cost, in DKK."
+msgstr "Pris pr. e-mail, i DKK."
+
+#: alma_reminder_service.module:20;78
+msgid "alma_reminder_service"
+msgstr ""
+
+#: alma_reminder_service.module:20;78
+msgid "Alma reminder service not enabled on this instance."
+msgstr "Påmindelsesservice er ikke aktiveret i jeres DDELibra."
+
+#: alma_reminder_service.info:0
+msgid "Alma Reminder Service"
+msgstr "Påmindelsesservice"
+
+#: alma_reminder_service.info:0
+msgid "easyDDB"
+msgstr ""
