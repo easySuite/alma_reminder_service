@@ -3,14 +3,14 @@
 # LANGUAGE translation of Drupal (general)
 # Copyright YEAR NAME <EMAIL@ADDRESS>
 # Generated from files:
-#  alma_reminder_service.module: n/a
-#  alma_reminder_service.info: n/a
+#  profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module: n/a
+#  profiles/ding2/modules/alma_reminder_service/alma_reminder_service.info: n/a
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
-"POT-Creation-Date: 2015-02-19 16:14+0100\n"
+"POT-Creation-Date: 2015-07-28 11:16+0300\n"
 "PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
 "Last-Translator: NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
@@ -19,67 +19,67 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: alma_reminder_service.module:38;100
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:38;100
 msgid "SMS reminders"
 msgstr ""
 
-#: alma_reminder_service.module:40;48
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:40;48
 msgid "You are subscribed"
 msgstr ""
 
-#: alma_reminder_service.module:40;48
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:40;48
 msgid "You are not subscribed"
 msgstr ""
 
-#: alma_reminder_service.module:46;111
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:46;111
 msgid "Email reminders"
 msgstr ""
 
-#: alma_reminder_service.module:66
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:66
 msgid "Services"
 msgstr ""
 
-#: alma_reminder_service.module:99
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:99
 msgid "By checking this, you accept our <a href=\"/paamindelsesservice\" target=\"_blank\">terms</a>"
 msgstr ""
 
-#: alma_reminder_service.module:105;115
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:105;115
 msgid "Price: @price DKK per piece"
 msgstr ""
 
-#: alma_reminder_service.module:152
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:152
 msgid "Alma reminder service"
 msgstr ""
 
-#: alma_reminder_service.module:159
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:159
 msgid "SMS reminder cost"
 msgstr ""
 
-#: alma_reminder_service.module:160
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:160
 msgid "SMS reminder cost, in DKK."
 msgstr ""
 
-#: alma_reminder_service.module:168
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:168
 msgid "E-Mail reminder cost"
 msgstr ""
 
-#: alma_reminder_service.module:169
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:169
 msgid "E-Mail reminder cost, in DKK."
 msgstr ""
 
-#: alma_reminder_service.module:20;78
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:20;78
 msgid "alma_reminder_service"
 msgstr ""
 
-#: alma_reminder_service.module:20;78
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.module:20;78
 msgid "Alma reminder service not enabled on this instance."
 msgstr ""
 
-#: alma_reminder_service.info:0
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.info:0
 msgid "Alma Reminder Service"
 msgstr ""
 
-#: alma_reminder_service.info:0
+#: profiles/ding2/modules/alma_reminder_service/alma_reminder_service.info:0
 msgid "easyDDB"
 msgstr ""
 
