@@ -187,7 +187,7 @@ function alma_reminder_service_client() {
   static $client;
   if (!isset($client)) {
     try {
-      $client = new Smsservice(variable_get('alma_base_url', ''));
+      $client = new Smsservice(variable_get('alma_base_url', ''), variable_get('alma_ssl_version', 'sslv3'));
     }
     catch (Exception $e) {
       watchdog_exception('alma_reminder_service', $e);
