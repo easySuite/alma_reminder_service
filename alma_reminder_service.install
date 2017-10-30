@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @file
+ */
+
+/**
+ * Disable, uninstall and clear alma_reminder_service module.
+ */
+function alma_reminder_service_update_7001() {
+  if (module_exists('alma_reminder_service')) {
+    variable_del('alma_reminder_sms_service_cost');
+    variable_del('alma_reminder_email_service_cost');
+
+    module_disable(array('alma_reminder_service'), FALSE);
+    drupal_uninstall_modules(array('alma_reminder_service'), FALSE);
+    drupal_set_installed_schema_version('alma_reminder_service', SCHEMA_UNINSTALLED);
+  }
+}
