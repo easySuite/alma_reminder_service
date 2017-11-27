@@ -81,5 +81,5 @@ msgid "Alma Reminder Service"
 msgstr "Påmindelsesservice"
 
 #: alma_reminder_service.info:0
-msgid "easyDDB"
+msgid "easyOPAC"
 msgstr ""
